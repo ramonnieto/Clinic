@@ -19,7 +19,7 @@
             <div class="center">
               <img src="{{ url_for('static', path='img/dental-icon.jpg') }}" alt="logo" />
             </div>
-            <form class="login-form" id="UserLoginForm" method="POST" accept-charset="utf-8" >
+            <form action="/sign-up" class="login-form" id="UserLoginForm" method="POST" accept-charset="utf-8" >
               <div class="control-group">
                 <div class="input-prepend">
                   <span class="add-on"><i class="icon-user"></i></span>
@@ -44,8 +44,8 @@
                 </div>
               </div>
               <div class="control-group" style="display: flex">
-                <input class="btn btn-primary btn-large btn-block" style="margin: 0 5px" type="submit" value="Nuevo" onclick="signup();"/>
-                <input class="btn btn-primary btn-large btn-block" style="margin: 0 5px" type="submit" value="Entrar" onclick="signin();"/>
+                <input class="btn btn-primary btn-large btn-block" style="margin: 0 5px" type="submit" value="Nuevo" />
+                <input class="btn btn-primary btn-large btn-block" style="margin: 0 5px" type="submit" value="Entrar" />
               </div>
             </form>
           </div>
