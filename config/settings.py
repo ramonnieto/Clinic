@@ -3,9 +3,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
 
-    secret_key: str
-    access_token_expire_minutes: int
-    algorithm: str
+    secret_key: str = "aaaa"
+    access_token_expire_minutes: int = 5
+    algorithm: str = "AAAA"
     
     model_config = SettingsConfigDict(env_file=".env")
 

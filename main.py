@@ -1,55 +1,82 @@
-from functools import lru_cache
-from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+import re
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from jwt import (
+    ExpiredSignatureError, 
+    ImmatureSignatureError, 
+    InvalidAlgorithmError,
+    InvalidAudienceError, 
+    InvalidKeyError, 
+    InvalidSignatureError, 
+    InvalidTokenError,
+    MissingRequiredClaimError)
+from starlette.middleware.base import RequestResponseEndpoint, BaseHTTPMiddleware
+from starlette.responses import Response, JSONResponse
+from starlette import status
+
 from auth import auth
-from config.settings import Settings
+from auth.token_validation import decode_access_token
 
 
-app = FastAPI()
+app = FastAPI(debug=True)
+
+class AuthorizeRequestMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        unprotected_paths = re.search(r"\/(index|sign-up|login|auth|static)", request.url.path)
+        if unprotected_paths is not None:
+            return await call_next(request)
+        
+        bearer_token = request.headers.get("Authorization")
+        if not bearer_token:
+            return JSONResponse(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                content={
+                    "detail": "Missing access token",
+                    "body": "Missing access token"
+                }
+            )
+        
+        try:
+            auth_token = bearer_token.split(' ')[1].strip()
+            token_payload = decode_access_token(auth_token)
+        except (
+            ExpiredSignatureError,
+            ImmatureSignatureError,
+            InvalidAlgorithmError,
+            InvalidAudienceError,
+            InvalidKeyError,
+            InvalidSignatureError,
+            InvalidTokenError,
+            MissingRequiredClaimError,
+        ) as error:
+            return JSONResponse(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                content={
+                    "detail": str(error),
+                    "body": str(error)
+                },
+            )
+        else:
+            request.state.user_id = token_payload.user_id
+            request.state.profile = token_payload.profile
+        
+        return await call_next(request)  
+            
+    
+app.add_middleware(AuthorizeRequestMiddleware)
+
 app.include_router(auth.router)
 
-#oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 templates = Jinja2Templates(directory="templates")
+     
 
-
-@app.get("/login", response_class=HTMLResponse)
-async def login(request: Request):
-    return templates.TemplateResponse(
-        request=request, 
-        name="login.html", 
-        context={})
-    
-
-
-"""
-@app.post("/token")
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    password_manager = PasswordManager()
-    print(f"Password Hash: {password_manager.set_password(form_data.password)}")
-    user_dict = fake_users_db.get(form_data.username)
-    if not user_dict:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    user = UserInDB(**user_dict)
-    if not password_manager.check_password(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-
-    return {"access_token": user.username, "token_type": "bearer"}
-
-@app.get("/users/me")
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return current_user
-"""
+@app.get("/info")
+async def info(request: Request):
+    return {"message": "Hi, world!"}
 
 
 @app.get("/update_patient_data", response_class=HTMLResponse)
@@ -57,14 +84,6 @@ async def login(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name="update_patient_data.html", 
-        context={})
-
-# Plantilla update password
-@app.get("/update_password", response_class=HTMLResponse)
-async def login(request: Request):
-    return templates.TemplateResponse(
-        request=request, 
-        name="update_password.html", 
         context={})
     
 

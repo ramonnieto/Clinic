@@ -1,2 +1,1 @@
-# ClinicaDental# Clinic
-# Clinic
+# ClinicaDental
