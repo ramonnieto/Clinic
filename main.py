@@ -28,7 +28,7 @@ async def login(request: Request):
         name="login.html", 
         context={})
     
-    
+
 
 """
 @app.post("/token")
@@ -57,6 +57,14 @@ async def login(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name="update_patient_data.html", 
+        context={})
+
+# Plantilla update password
+@app.get("/update_password", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse(
+        request=request, 
+        name="update_password.html", 
         context={})
     
 

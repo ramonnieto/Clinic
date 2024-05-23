@@ -12,10 +12,11 @@ if profile == "1":
     print("\t[2] Create profile")
     print("\t[3] Update profile")
     print("\t[4] Get profile\n")
+    print("\t[4] Change password\n")
     
     operation = "0"
     while operation != "X":
-        while operation not in ["1","2","3","4","X"]: 
+        while operation not in ["1","2","3","4","5","X"]: 
             operation = input("Selection: ")
 
                 
@@ -29,7 +30,9 @@ if profile == "1":
             case "3":
                 # Update
             case "4":
-                # Read            
+                # Read     
+            case "5":
+                # change       
             case _:
                 "Invalid option"
         
