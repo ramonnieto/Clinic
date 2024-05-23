@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clinica Dental CFTIC</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="{{ url_for('static', path='css/style.css') }}" rel="stylesheet" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <nav class="sidebar close">
+      <header>
+        <div class="text logo">
+          <span class="name">Enrique Garcia</span>
+          <span class="profile">Paciente</span>
+        </div>
+        <i class="bx bx-menu toggle"></i>
+      </header>
+
+      <div class="menu-bar">
+        <div class="menu">
+          <ul class="menu-links">
+            <li class="nav-link">
+              <a href="/actualizar_datos">
+                <i class="bx bx-user icon"></i>
+                <span class="text nav-text">Actualizar datos</span>
+              </a>
+            </li>
+            <li class="nav-link">
+              <a href="/actualizar_password">
+                <i class="bx bx-key icon"></i>
+                <span class="text nav-text">Contraseña</span>
+              </a>
+            </li>
+            <li class="nav-link">
+              <a href="/buscar_doctor">
+                <i class="bx bx-search-alt icon"></i>
+                <span class="text nav-text">Buscar doctor</span>
+              </a>
+            </li>
+            <li class="nav-link">
+              <a href="/historial">
+                <i class="bx bx-history icon"></i>
+                <span class="text nav-text">Historial</span>
+              </a>
+            </li>
+            <li class="nav-link">
+              <a href="/citas">
+                <i class="bx bx-calendar icon"></i>
+                <span class="text nav-text">Pedir cita</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="bottom-content">
+          <ul>
+            <li class="">
+              <a href="#">
+                <i class="bx bx-log-out icon"></i>
+                <span class="text nav-text">Salir</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="home">
+      {% block content %}
+      {% endblock %}
+    </section>
+
+    <script src="{{ url_for('static', path='js/script.js') }}"></script>
+  </body>
+</html>
