@@ -85,6 +85,14 @@ async def login(request: Request):
         request=request, 
         name="update_patient_data.html", 
         context={})
+
+## add section update password
+@app.get("/update_password", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse(
+        request=request, 
+        name="update_password.html", 
+        context={})
     
 
 if __name__ == "__main__":
